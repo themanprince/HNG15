@@ -1,5 +1,6 @@
-import { useCallback } from "react";
-import type { Task } from "../types";
+import { useCallback, useMemo } from "react";
+import type { Priority, Task } from "../types";
+import { nextOrder, sortTasks } from "../lib/sorting";
 import { parseTasks, TASKS_KEY } from "../lib/storage";
 import { useLocalStorage } from "./useLocalStorage";
 
@@ -7,15 +8,15 @@ export function useTasks() {
   const [tasks, setTasks] = useLocalStorage<Task[]>(TASKS_KEY, parseTasks);
 
   const addTask = useCallback(
-    (title: string) => {
+    (title: string, priority: Priority) => {
       setTasks((prev) => [
         ...prev,
         {
           id: crypto.randomUUID(),
           title,
           completed: false,
-          priority: "medium",
-          order: prev.length,
+          priority,
+          order: nextOrder(prev, priority),
           createdAt: Date.now(),
         },
       ]);
@@ -48,5 +49,7 @@ export function useTasks() {
     setTasks((prev) => prev.filter((t) => !t.completed));
   }, [setTasks]);
 
-  return { tasks, addTask, updateTitle, toggleTask, deleteTask, clearCompleted };
+  const sorted = useMemo(() => sortTasks(tasks), [tasks]);
+
+  return { tasks: sorted, addTask, updateTitle, toggleTask, deleteTask, clearCompleted };
 }

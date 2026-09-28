@@ -1,8 +1,7 @@
 import type { Priority, Task } from "../types";
+import { PRIORITIES } from "./priority";
 
 export const TASKS_KEY = "todo-app:tasks";
-
-const PRIORITIES: readonly Priority[] = ["high", "medium", "low"];
 
 function isTask(value: unknown): value is Task {
   if (typeof value !== "object" || value === null) return false;

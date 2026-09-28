@@ -1,5 +1,6 @@
 import { useState, type FormEvent } from "react";
 import type { Task } from "../types";
+import { PriorityBadge } from "./PriorityBadge";
 
 interface Props {
   task: Task;
@@ -53,6 +54,7 @@ export function TaskItem({ task, onToggle, onDelete, onRename }: Props) {
           {task.title}
         </span>
       )}
+      {!editing && <PriorityBadge priority={task.priority} />}
       {!editing && (
         <button type="button" onClick={startEdit} className="text-sm text-slate-500">
           Edit
