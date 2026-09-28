@@ -1,0 +1,19 @@
+@import "tailwindcss";
+
+@theme {
+  --animate-pop-in: pop-in 180ms ease-out;
+  --animate-picked: picked 260ms ease-out;
+}
+
+@keyframes pop-in {
+  from {
+    opacity: 0;
+    transform: translateY(6px) scale(0.98);
+  }
+}
+
+@keyframes picked {
+  40% {
+    transform: scale(1.04);
+  }
+}
