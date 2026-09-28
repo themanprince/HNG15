@@ -4,6 +4,7 @@ import { useTasks } from "./hooks/useTasks";
 import { AddTaskForm } from "./components/AddTaskForm";
 import { FilterBar } from "./components/FilterBar";
 import { TaskList } from "./components/TaskList";
+import { RankingModal } from "./components/RankingModal";
 
 const EMPTY_MESSAGES: Record<Filter, string> = {
   all: "No tasks yet. Add one above!",
@@ -12,20 +13,28 @@ const EMPTY_MESSAGES: Record<Filter, string> = {
 };
 
 export function App() {
-  const { tasks, addTask, updateTitle, toggleTask, deleteTask, clearCompleted } = useTasks();
+  const { tasks, addTask, updateTitle, toggleTask, deleteTask, clearCompleted, applyRanking } =
+    useTasks();
   const [filter, setFilter] = useState<Filter>("all");
+  const [ranking, setRanking] = useState(false);
 
   const visible = useMemo(
     () =>
       tasks.filter((t) => (filter === "all" ? true : filter === "active" ? !t.completed : t.completed)),
     [tasks, filter],
   );
-  const activeCount = tasks.filter((t) => !t.completed).length;
+  const activeTasks = useMemo(() => tasks.filter((t) => !t.completed), [tasks]);
+  const activeCount = activeTasks.length;
   const completedCount = tasks.length - activeCount;
 
   return (
     <main className="mx-auto flex max-w-xl flex-col gap-4 p-4">
-      <h1 className="text-2xl font-bold text-slate-900">Priority To-Do</h1>
+      <header className="flex items-center justify-between gap-2">
+        <h1 className="text-2xl font-bold text-slate-900">Priority To-Do</h1>
+        <button type="button" onClick={() => setRanking(true)} className="rounded-lg bg-indigo-100 px-3 py-2 text-indigo-700">
+          Rank my tasks
+        </button>
+      </header>
       <AddTaskForm onAdd={addTask} />
       <div className="flex flex-wrap items-center justify-between gap-2">
         <FilterBar filter={filter} onChange={setFilter} />
@@ -44,6 +53,16 @@ export function App() {
         <button type="button" onClick={clearCompleted} className="self-end text-sm text-slate-500">
           Clear completed ({completedCount})
         </button>
+      )}
+      {ranking && (
+        <RankingModal
+          tasks={activeTasks}
+          onClose={() => setRanking(false)}
+          onApply={(ranked) => {
+            applyRanking(ranked);
+            setRanking(false);
+          }}
+        />
       )}
     </main>
   );

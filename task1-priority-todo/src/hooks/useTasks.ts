@@ -49,7 +49,16 @@ export function useTasks() {
     setTasks((prev) => prev.filter((t) => !t.completed));
   }, [setTasks]);
 
+  /** Replaces tasks with the given updated versions (matched by id). */
+  const applyRanking = useCallback(
+    (updated: readonly Task[]) => {
+      const byId = new Map(updated.map((t) => [t.id, t]));
+      setTasks((prev) => prev.map((t) => byId.get(t.id) ?? t));
+    },
+    [setTasks],
+  );
+
   const sorted = useMemo(() => sortTasks(tasks), [tasks]);
 
-  return { tasks: sorted, addTask, updateTitle, toggleTask, deleteTask, clearCompleted };
+  return { tasks: sorted, addTask, updateTitle, toggleTask, deleteTask, clearCompleted, applyRanking };
 }
