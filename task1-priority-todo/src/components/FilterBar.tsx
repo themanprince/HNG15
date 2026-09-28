@@ -13,14 +13,16 @@ interface Props {
 
 export function FilterBar({ filter, onChange }: Props) {
   return (
-    <div role="group" aria-label="Filter tasks" className="flex gap-1">
+    <div role="group" aria-label="Filter tasks" className="flex rounded-xl bg-slate-200/70 p-1">
       {FILTERS.map(({ value, label }) => (
         <button
           key={value}
           type="button"
           aria-pressed={filter === value}
           onClick={() => onChange(value)}
-          className={`rounded-md px-3 py-1 text-sm ${filter === value ? "bg-indigo-600 text-white" : "text-slate-600"}`}
+          className={`rounded-lg px-3 py-1 text-sm font-medium focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-400 ${
+            filter === value ? "bg-white text-slate-900 shadow-sm" : "text-slate-600 hover:text-slate-900"
+          }`}
         >
           {label}
         </button>
